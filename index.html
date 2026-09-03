@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>㈜에스에이치 업무 허브</title>
+<style>
+  :root{
+    --ink:#1c1d21;
+    --ink-soft:#5b5e68;
+    --line:#e4e3e0;
+    --paper:#faf9f7;
+    --card:#ffffff;
+    --red:#b3242d;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%; margin:0;}
+  body{
+    display:flex; flex-direction:column;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+  }
+  header{
+    padding:14px 16px;
+    border-bottom:2px solid var(--ink);
+    display:flex; align-items:center; gap:10px;
+    flex-shrink:0;
+  }
+  header .mark{width:10px;height:10px;background:var(--red);border-radius:2px;}
+  header h1{font-size:16px; margin:0; font-weight:800; letter-spacing:-0.02em;}
+
+  nav{
+    display:flex; gap:6px; padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    background:var(--card);
+    flex-shrink:0;
+    overflow-x:auto;
+  }
+  nav button{
+    border:1px solid var(--line); background:var(--paper); color:var(--ink-soft);
+    padding:9px 16px; border-radius:20px; font-size:13px; font-weight:700;
+    cursor:pointer; white-space:nowrap; font-family:inherit;
+    display:flex; align-items:center; gap:6px;
+  }
+  nav button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  nav button:disabled{opacity:.45; cursor:default;}
+
+  .frame-wrap{flex:1; position:relative; min-height:0;}
+  iframe{
+    position:absolute; inset:0; width:100%; height:100%; border:none;
+    display:none;
+  }
+  iframe.active{display:block;}
+  .placeholder{
+    position:absolute; inset:0; display:none;
+    align-items:center; justify-content:center;
+    flex-direction:column; gap:8px; color:var(--ink-soft); text-align:center; padding:20px;
+  }
+  .placeholder.active{display:flex;}
+  .placeholder .big{font-size:15px; font-weight:700; color:var(--ink);}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="mark"></span>
+  <h1>㈜에스에이치 업무 허브</h1>
+</header>
+
+<nav id="tabNav">
+  <button data-tab="equip" class="active">📦 비품</button>
+  <button data-tab="hr">🧑‍💼 인사</button>
+  <button data-tab="fund" disabled>💰 자금 (준비중)</button>
+</nav>
+
+<div class="frame-wrap">
+  <iframe id="frame-equip" class="active" src="https://youn-bok.github.io/sh-inventory/" loading="lazy"></iframe>
+  <iframe id="frame-hr" src="https://youn-bok.github.io/sh-hr/" loading="lazy"></iframe>
+  <div id="frame-fund" class="placeholder">
+    <div class="big">자금 대시보드 준비중이에요</div>
+    <div>구글시트 정리되는 대로 연결할게요.</div>
+  </div>
+</div>
+
+<script>
+const tabToFrame = {equip:"frame-equip", hr:"frame-hr", fund:"frame-fund"};
+document.getElementById("tabNav").addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button");
+  if(!btn || btn.disabled) return;
+  document.querySelectorAll("#tabNav button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  Object.values(tabToFrame).forEach(id => {
+    document.getElementById(id).classList.remove("active");
+  });
+  document.getElementById(tabToFrame[btn.dataset.tab]).classList.add("active");
+});
+</script>
+</body>
+</html>
