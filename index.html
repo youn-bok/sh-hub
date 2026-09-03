@@ -71,12 +71,14 @@
 <nav id="tabNav">
   <button data-tab="equip" class="active">📦 비품</button>
   <button data-tab="hr">🧑‍💼 인사</button>
+  <button data-tab="leave">🗓 연차</button>
   <button data-tab="fund" disabled>💰 자금 (준비중)</button>
 </nav>
 
 <div class="frame-wrap">
   <iframe id="frame-equip" class="active" src="https://youn-bok.github.io/sh-inventory/" loading="lazy"></iframe>
   <iframe id="frame-hr" src="https://youn-bok.github.io/sh-hr/" loading="lazy"></iframe>
+  <iframe id="frame-leave" src="https://youn-bok.github.io/sh-leave/" loading="lazy"></iframe>
   <div id="frame-fund" class="placeholder">
     <div class="big">자금 대시보드 준비중이에요</div>
     <div>구글시트 정리되는 대로 연결할게요.</div>
@@ -84,7 +86,7 @@
 </div>
 
 <script>
-const tabToFrame = {equip:"frame-equip", hr:"frame-hr", fund:"frame-fund"};
+const tabToFrame = {equip:"frame-equip", hr:"frame-hr", leave:"frame-leave", fund:"frame-fund"};
 document.getElementById("tabNav").addEventListener("click", (ev) => {
   const btn = ev.target.closest("button");
   if(!btn || btn.disabled) return;
