@@ -3,224 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>㈜에스에이치 자금일정</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<title>㈜에스에이치 업무 허브</title>
 <style>
   :root{
-    --ink:#1c1d21; --ink-soft:#5b5e68; --line:#e4e3e0;
-    --paper:#faf9f7; --card:#ffffff; --red:#b3242d; --red-soft:#f6e4e3;
-    --blue:#2d5fa3; --blue-soft:#e7eefa;
-    --radius:10px;
+    --ink:#1c1d21;
+    --ink-soft:#5b5e68;
+    --line:#e4e3e0;
+    --paper:#faf9f7;
+    --card:#ffffff;
+    --red:#b3242d;
   }
   *{box-sizing:border-box;}
-  body{margin:0; background:var(--paper); color:var(--ink);
-    font-family:"Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif; line-height:1.5;}
-  header{padding:16px 18px; border-bottom:2px solid var(--ink); display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  html,body{height:100%; margin:0;}
+  body{
+    display:flex; flex-direction:column;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Pretendard","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+  }
+  header{
+    padding:14px 16px;
+    border-bottom:2px solid var(--ink);
+    display:flex; align-items:center; gap:10px;
+    flex-shrink:0;
+  }
   header .mark{width:10px;height:10px;background:var(--red);border-radius:2px;}
-  header h1{font-size:17px; margin:0; font-weight:800;}
-  header .sub{font-size:12px; color:var(--ink-soft);}
-  main{max-width:820px; margin:0 auto; padding:16px 14px 60px;}
+  header h1{font-size:16px; margin:0; font-weight:800; letter-spacing:-0.02em;}
 
-  .tab-group{display:flex; gap:8px; margin-bottom:16px;}
-  .tab-btn{
-    flex:1; border:1px solid var(--line); background:var(--card); color:var(--ink-soft);
-    padding:11px; border-radius:10px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit;
+  nav{
+    display:flex; gap:6px; padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    background:var(--card);
+    flex-shrink:0;
+    overflow-x:auto;
   }
-  .tab-btn.active.sh{background:var(--ink); color:#fff; border-color:var(--ink);}
-  .tab-btn.active.energy{background:#a9812f; color:#fff; border-color:#a9812f;}
+  nav button{
+    border:1px solid var(--line); background:var(--paper); color:var(--ink-soft);
+    padding:9px 16px; border-radius:20px; font-size:13px; font-weight:700;
+    cursor:pointer; white-space:nowrap; font-family:inherit;
+    display:flex; align-items:center; gap:6px;
+  }
+  nav button.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  nav button:disabled{opacity:.45; cursor:default;}
 
-  .filter-row{display:flex; gap:8px; margin-bottom:16px;}
-  select, input[type="text"]{
-    border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:12.5px;
-    background:var(--card); color:var(--ink); font-family:inherit;
+  .frame-wrap{flex:1; position:relative; min-height:0;}
+  iframe{
+    position:absolute; inset:0; width:100%; height:100%; border:none;
+    display:none;
   }
-  input[type="text"]{flex:1;}
-
-  .day-group{margin-bottom:16px;}
-  .day-head{
-    display:flex; align-items:baseline; gap:8px; margin-bottom:8px;
+  iframe.active{display:block;}
+  .placeholder{
+    position:absolute; inset:0; display:none;
+    align-items:center; justify-content:center;
+    flex-direction:column; gap:8px; color:var(--ink-soft); text-align:center; padding:20px;
   }
-  .day-head .day-num{font-size:18px; font-weight:800;}
-  .day-head .day-label{font-size:12px; color:var(--ink-soft);}
-  .day-head .day-count{font-size:11px; background:var(--ink); color:#fff; padding:1px 7px; border-radius:20px; font-weight:700;}
-
-  .item-card{
-    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    padding:12px 14px; margin-bottom:8px;
-  }
-  .item-top{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
-  .item-vendor{font-weight:700; font-size:14px;}
-  .item-method{
-    font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:5px; flex-shrink:0;
-    background:var(--blue-soft); color:var(--blue);
-  }
-  .item-method.auto{background:#eef2e4; color:#5c7a29;}
-  .item-method.pay{background:#faeee0; color:#b5651d;}
-  .item-method.cash{background:#f3e8f6; color:#7a3f96;}
-  .item-content{font-size:12.5px; color:var(--ink-soft); margin-top:3px;}
-  .item-bank{font-size:11.5px; color:var(--ink-soft); margin-top:6px; padding-top:6px; border-top:1px dashed var(--line);}
-  .item-amount{font-size:13px; font-weight:800; margin-top:4px;}
-
-  .empty{padding:40px; text-align:center; color:var(--ink-soft); font-size:13px;}
-  .loading, .error-box{text-align:center; padding:60px 20px; color:var(--ink-soft); font-size:13.5px;}
-  .error-box{color:var(--red);}
+  .placeholder.active{display:flex;}
+  .placeholder .big{font-size:15px; font-weight:700; color:var(--ink);}
 </style>
 </head>
 <body>
 
 <header>
   <span class="mark"></span>
-  <h1>㈜에스에이치 자금일정</h1>
-  <span class="sub">지급 알림용 (실제 회계·결재는 별도)</span>
+  <h1>㈜에스에이치 업무 허브</h1>
 </header>
 
-<main>
-  <div id="loadingView" class="loading">데이터를 불러오는 중…</div>
-  <div id="errorView" class="error-box" style="display:none;"></div>
+<nav id="tabNav">
+  <button data-tab="equip" class="active">📦 비품</button>
+  <button data-tab="hr">🧑‍💼 인사</button>
+  <button data-tab="leave">🗓 연차</button>
+  <button data-tab="fund" disabled>💰 자금 (준비중)</button>
+</nav>
 
-  <div id="appView" style="display:none;">
-    <div class="tab-group" id="companyTabs">
-      <button class="tab-btn active sh" data-company="SH">SH</button>
-      <button class="tab-btn energy" data-company="에너지">에너지</button>
-    </div>
-
-    <div class="filter-row">
-      <select id="methodFilter">
-        <option value="전체">지급방법 전체</option>
-        <option value="이체">이체</option>
-        <option value="자동출금">자동출금</option>
-        <option value="납부">납부</option>
-        <option value="현금출금">현금출금</option>
-      </select>
-      <input type="text" id="searchBox" placeholder="거래처 검색">
-    </div>
-
-    <div id="listArea"></div>
-    <pre id="debugBox" style="margin-top:20px; padding:10px; background:#fff3f3; border:1px solid var(--red); font-size:10px; white-space:pre-wrap; border-radius:8px;"></pre>
+<div class="frame-wrap">
+  <iframe id="frame-equip" class="active" src="https://youn-bok.github.io/sh-inventory/" loading="lazy"></iframe>
+  <iframe id="frame-hr" src="https://youn-bok.github.io/sh-hr/" loading="lazy"></iframe>
+  <iframe id="frame-leave" src="https://youn-bok.github.io/sh-leave/" loading="lazy"></iframe>
+  <div id="frame-fund" class="placeholder">
+    <div class="big">자금 대시보드 준비중이에요</div>
+    <div>구글시트 정리되는 대로 연결할게요.</div>
   </div>
-</main>
+</div>
 
 <script>
-const SHEET_ID = "1ukgI4pt6EuWGdGs7R9wCIAuDbdWcuH2c";
-const GID = "1332668387";
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}&_=${Date.now()}`;
-
-let items = [];
-let currentCompany = "SH";
-
-function methodClass(m){
-  if(m === "자동출금") return "auto";
-  if(m === "납부") return "pay";
-  if(m === "현금출금") return "cash";
-  return "";
-}
-
-function dayLabel(dayStr){
-  const n = parseInt(String(dayStr).replace(/[^0-9]/g,""));
-  return isNaN(n) ? 999 : n;
-}
-
-function daysUntil(dayNum){
-  const today = new Date(); today.setHours(0,0,0,0);
-  const y = today.getFullYear(), m = today.getMonth();
-  let candidate = new Date(y, m, dayNum);
-  if(candidate < today) candidate = new Date(y, m+1, dayNum);
-  return Math.round((candidate - today)/86400000);
-}
-
-function loadData(){
-  Papa.parse(CSV_URL, {
-    download:true, header:true, skipEmptyLines:true,
-    complete: function(res){
-      items = res.data.map(r => ({
-        company: (r["회사구분"]||"").trim(),
-        day: (r["지급일"]||"").trim(),
-        method: (r["지급방법"]||"").trim(),
-        vendor: (r["거래처"]||"").trim(),
-        content: (r["내용"]||"").trim(),
-        bank: (r["은행"]||"").trim(),
-        account: (r["계좌번호"]||"").trim(),
-        payee: (r["예금주"]||"").trim(),
-        amount: (r["금액"]||"").trim(),
-        note: (r["비고"]||"").trim(),
-      })).filter(x => x.company && x.vendor);
-      render();
-      document.getElementById("loadingView").style.display = "none";
-      document.getElementById("appView").style.display = "block";
-    },
-    error: function(){
-      document.getElementById("loadingView").style.display = "none";
-      document.getElementById("errorView").style.display = "block";
-      document.getElementById("errorView").textContent =
-        "데이터를 불러오지 못했어요. 구글시트 공유 설정을 확인해주세요.";
-    }
+const tabToFrame = {equip:"frame-equip", hr:"frame-hr", leave:"frame-leave", fund:"frame-fund"};
+document.getElementById("tabNav").addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button");
+  if(!btn || btn.disabled) return;
+  document.querySelectorAll("#tabNav button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  Object.values(tabToFrame).forEach(id => {
+    document.getElementById(id).classList.remove("active");
   });
-}
-
-function render(){
-  const dbg = document.getElementById("debugBox");
-  if(dbg) dbg.textContent = `총 파싱행: ${items.length}건\n예시:\n` + JSON.stringify(items.slice(0,3), null, 1);
-
-  const methodF = document.getElementById("methodFilter").value;
-  const search = document.getElementById("searchBox").value.trim();
-
-  let list = items.filter(x => x.company === currentCompany);
-  if(methodF !== "전체") list = list.filter(x => x.method === methodF);
-  if(search) list = list.filter(x => x.vendor.includes(search) || x.content.includes(search));
-
-  const groups = {};
-  list.forEach(x => {
-    const dn = dayLabel(x.day);
-    if(!groups[dn]) groups[dn] = [];
-    groups[dn].push(x);
-  });
-
-  const dayNums = Object.keys(groups).map(Number).sort((a,b) => daysUntil(a) - daysUntil(b));
-
-  const box = document.getElementById("listArea");
-  if(dayNums.length === 0){
-    box.innerHTML = `<div class="empty">조건에 맞는 항목이 없어요.</div>`;
-    return;
-  }
-
-  box.innerHTML = dayNums.map(dn => {
-    const du = daysUntil(dn);
-    const label = du === 0 ? "오늘" : du === 1 ? "내일" : `${du}일 후`;
-    const cardsHtml = groups[dn].map(x => `
-      <div class="item-card">
-        <div class="item-top">
-          <div class="item-vendor">${x.vendor}</div>
-          <div class="item-method ${methodClass(x.method)}">${x.method}</div>
-        </div>
-        ${x.content ? `<div class="item-content">${x.content}</div>` : ""}
-        ${x.amount ? `<div class="item-amount">${x.amount}</div>` : ""}
-        ${(x.bank || x.account) ? `<div class="item-bank">${x.bank||''} ${x.account||''} ${x.payee?('· '+x.payee):''}</div>` : ""}
-      </div>
-    `).join("");
-    return `
-      <div class="day-group">
-        <div class="day-head">
-          <span class="day-num">${dn}일</span>
-          <span class="day-label">${label}</span>
-          <span class="day-count">${groups[dn].length}건</span>
-        </div>
-        ${cardsHtml}
-      </div>
-    `;
-  }).join("");
-}
-
-document.getElementById("companyTabs").addEventListener("click", (ev) => {
-  if(!ev.target.matches(".tab-btn")) return;
-  document.querySelectorAll("#companyTabs .tab-btn").forEach(b=>b.classList.remove("active"));
-  ev.target.classList.add("active");
-  currentCompany = ev.target.dataset.company;
-  render();
+  document.getElementById(tabToFrame[btn.dataset.tab]).classList.add("active");
 });
-document.getElementById("methodFilter").addEventListener("change", render);
-document.getElementById("searchBox").addEventListener("input", render);
-
-loadData();
 </script>
 </body>
 </html>
